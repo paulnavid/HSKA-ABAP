@@ -4,7 +4,7 @@ CLASS ycl_generate_language_data_007 DEFINITION
   CREATE PUBLIC .
 
   PUBLIC SECTION.
-  INTERFACES if_oo_adt_classrun.
+    INTERFACES if_oo_adt_classrun.
   PROTECTED SECTION.
   PRIVATE SECTION.
 ENDCLASS.
@@ -37,12 +37,24 @@ language_documentation = 'https://en.cppreference.com/w/cpp/language' release_ye
 'C# is a general-purpose, multi-paradigm programming language encompassing strong typing, lexically scoped, imperative, declarative, functional, generic, object-oriented (class-based), and component-oriented programming disciplines.'
 language_documentation = 'https://docs.microsoft.com/de-de/dotnet/csharp/' release_year = '2000' status = ' ' )
 
-  ( language_id = '006' language_name = 'R' language_rating = '5' language_description = 'R is a programming language and free software environment for statistical computing and graphics supported by the R Foundation for Statistical Computing.'
+  ( language_id = '006' language_name = 'R' language_rating = '3' language_description = 'R is a programming language and free software environment for statistical computing and graphics supported by the R Foundation for Statistical Computing.'
 language_documentation = 'https://www.r-project.org' release_year = '1993' status = ' ' )
 
   ( language_id = '007' language_name = 'JSFuck' language_rating = '1' language_description =
 'JSFuck is an esoteric and educational programming style based on the atomic parts of JavaScript. It uses only six different characters to write and execute code.' language_documentation = 'http://www.jsfuck.com' release_year = '2013' status = ' ' )
 
+  ( language_id = '008' language_name = 'Go' language_rating = '4' language_description =
+'Go is a statically typed, compiled programming language designed at Google. It is syntactically similar to C, but with memory safety, garbage collection, structural typing, and CSP-style concurrency.' language_documentation = 'https://golang.org'
+release_year = '2009' status = ' ' )
+
+  ( language_id = '009' language_name = 'Haskell' language_rating = '2' language_description =
+'Haskell is a general-purpose, statically typed, purely functional programming language with type inference and lazy evaluation.' language_documentation = 'https://www.haskell.org'
+release_year = '1990' status = ' ' )
+
+( language_id = '010' language_name = 'MATLAB' language_rating = '1' language_description =
+'MATLAB is a multi-paradigm numerical computing environment and proprietary programming language developed by MathWorks. It allows matrix manipulations, plotting of functions and data, implementation of algorithms and creation of user interfaces.'
+language_documentation = 'https://www.mathworks.com/help/documentation-center.html'
+release_year = '1984' status = ' ' )
 
 
   ).

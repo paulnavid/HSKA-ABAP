@@ -2,8 +2,7 @@
 @AccessControl.authorizationCheck: #CHECK
 
 @UI: {
- headerInfo: { typeName: 'Language', typeNamePlural: 'Languages', title: { type: #STANDARD, value: 'ID' } } }
-
+ headerInfo: { typeName: 'Language', typeNamePlural: 'Languages', title: { type: #STANDARD, value: 'Name' } } }
 @Search.searchable: true
 
 define root view entity YC_LANG_M_007
