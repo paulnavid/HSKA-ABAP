@@ -24,33 +24,93 @@ ENDCLASS.
 
 CLASS lhc_language IMPLEMENTATION.
 
+
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  " Validation of release year.
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  METHOD validatereleaseyear.
+
+    READ ENTITY yi_lang_m_007\\Language FROM VALUE #(
+      FOR key IN keys ( %key     = key-language_id
+                        %control = VALUE #( language_id = if_abap_behv=>mk-on ) ) )
+        RESULT DATA(lt_language).
+
+     LOOP AT lt_language INTO DATA(ls_language).
+
+       IF NOT ls_language-release_year <= cl_abap_context_info=>get_system_date(  ).
+         APPEND VALUE #(  language_id = ls_language-language_id ) TO failed.
+         APPEND VALUE #(  language_id = ls_language-language_id
+                          %msg      = new_message( id = 'YHSKA99'
+                          number   = '002'
+                          v1       = ls_language-release_year
+                          severity = if_abap_behv_message=>severity-error )
+                          %element-release_year = if_abap_behv=>mk-on ) TO reported.
+       ENDIF.
+     ENDLOOP.
+  ENDMETHOD.
+
+
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  " Validation of rating.
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  METHOD validaterating.
+
+    READ ENTITY yi_lang_m_007\\Language FROM VALUE #(
+    FOR key IN keys ( %key     = key-language_id
+                      %control = VALUE #( language_id = if_abap_behv=>mk-on ) ) )
+      RESULT DATA(lt_language).
+
+    LOOP AT lt_language INTO DATA(ls_language).
+
+      IF NOT ls_language-language_rating CA '12345'.
+        APPEND VALUE #(  language_id = ls_language-language_id ) TO failed.
+        APPEND VALUE #(  language_id = ls_language-language_id
+                         %msg      = new_message( id = 'YHSKA99'
+                         number   = '001'
+                         v1       = ls_language-language_rating
+                         severity = if_abap_behv_message=>severity-error )
+                         %element-language_rating = if_abap_behv=>mk-on ) TO reported.
+      ENDIF.
+    ENDLOOP.
+  ENDMETHOD.
+
+
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  " Action to reject a language.
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
   METHOD rejectlanguage.
     MODIFY ENTITIES OF yi_lang_m_007 IN LOCAL MODE
       ENTITY Language
       UPDATE FROM VALUE #(
         FOR key IN keys ( language_id    = key-language_id
-                          status = 'X'   " Canceled
-                          %control-language_id = if_abap_behv=>mk-on ) )
+                          status = 'X'   " Rejected
+                          %control-status = if_abap_behv=>mk-on ) )
            FAILED   failed
            REPORTED reported.
 
     " read changed data for result
     READ ENTITIES OF yi_lang_m_007 IN LOCAL MODE
-     ENTITY Language
-       FIELDS ( language_id
-                language_name
-                language_description
-                release_year
-                language_rating
-                status )
-         WITH VALUE #( FOR key IN keys ( language_id = key-language_id ) )
-     RESULT DATA(lt_language).
+      ENTITY Language
+      FROM VALUE #( FOR key IN keys ( %key = key-language_id
+                 %control = VALUE #(
+                 language_name          = if_abap_behv=>mk-on
+                 language_description   = if_abap_behv=>mk-on
+                 release_year           = if_abap_behv=>mk-on
+                 language_rating        = if_abap_behv=>mk-on
+                 status                 = if_abap_behv=>mk-on
+                 ) ) )
+        RESULT DATA(lt_language).
 
-    result = VALUE #( FOR language IN lt_language ( language_id = language-language_id
-                                                %param    = language
+    result = VALUE #(
+        FOR language IN lt_language ( language_id = language-language_id
+                                      %param    = language
                                               ) ).
   ENDMETHOD.
 
+
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+  " Get features.
+  """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
   METHOD get_features.
     READ ENTITY yi_lang_m_007
          FIELDS (  language_id status )
@@ -63,61 +123,6 @@ CLASS lhc_language IMPLEMENTATION.
                          %features-%action-rejectLanguage = COND #( WHEN ls_language-status = 'X'
                                                                     THEN if_abap_behv=>fc-o-disabled ELSE if_abap_behv=>fc-o-enabled  )
                       ) ).
-
-  MODIFY ENTITIES OF yi_lang_m_007 IN LOCAL MODE
-           ENTITY language
-              UPDATE FROM VALUE #( FOR key IN keys ( language_id = key-language_id
-                                                     status = 'X'
-                                                     %control-status = if_abap_behv=>mk-on ) )
-           FAILED   failed
-           REPORTED reported.
-
-  ENDMETHOD.
-
-  METHOD validatereleaseyear.
-
-    READ ENTITY yi_lang_m_007\\Language FROM VALUE #(
-    FOR <root_key> IN keys ( %key     = <root_key>
-                             %control = VALUE #( language_id = if_abap_behv=>mk-on ) ) )
-          RESULT DATA(lt_language).
-
-     LOOP AT lt_language INTO DATA(ls_language).
-
-
-
-      IF NOT ls_language-release_year <= cl_abap_context_info=>get_system_date(  ).
-        APPEND VALUE #(  language_id = ls_language-language_id ) TO failed.
-        APPEND VALUE #(  language_id = ls_language-language_id
-                         %msg      = new_message( id = 'YHSKA99'
-                         number   = '002'
-                         v1       = ls_language-release_year
-                         severity = if_abap_behv_message=>severity-error )
-                         %element-release_year = if_abap_behv=>mk-on ) TO reported.
-      ENDIF.
-
-    ENDLOOP.
-  ENDMETHOD.
-
-  METHOD validaterating.
-
-    READ ENTITY yi_lang_m_007\\Language FROM VALUE #(
-    FOR <root_key> IN keys ( %key     = <root_key>
-                             %control = VALUE #( language_id = if_abap_behv=>mk-on ) ) )
-          RESULT DATA(lt_language).
-
-     LOOP AT lt_language INTO DATA(ls_language).
-
-      IF NOT ls_language-language_rating CA '12345'.
-        APPEND VALUE #(  language_id = ls_language-language_id ) TO failed.
-        APPEND VALUE #(  language_id = ls_language-language_id
-                         %msg      = new_message( id = 'YHSKA99'
-                         number   = '001'
-                         v1       = ls_language-language_rating
-                         severity = if_abap_behv_message=>severity-error )
-                         %element-language_rating = if_abap_behv=>mk-on ) TO reported.
-      ENDIF.
-
-    ENDLOOP.
 
   ENDMETHOD.
 
