@@ -1,0 +1,22 @@
+managed implementation in class YCL_BP_I_LANG_M_007 unique;
+
+define behavior for YI_LANG_M_007 alias Language
+persistent table ylanguage_007
+lock master
+//authorization master ( instance )
+//etag master <field_name>
+{
+  // mandatory
+  field ( mandatory ) language_id, language_name, language_rating, language_description, release_year, status;
+
+  create;
+  update;
+  delete;
+
+  // instance action and dynamic action control
+  action ( features : instance ) rejectLanguage result [1] $self;
+
+  // validations
+  validation validateReleaseYear on save { field release_year; }
+  validation validateRating on save { field language_rating; }
+}

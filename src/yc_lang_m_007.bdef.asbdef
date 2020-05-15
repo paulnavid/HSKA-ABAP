@@ -1,0 +1,11 @@
+projection;
+
+define behavior for YC_LANG_M_007 alias LanguageProcessor
+use etag
+{
+  use create;
+  use update;
+  use delete;
+
+  use action rejectLanguage;
+}
